@@ -1,0 +1,16 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+    "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/com/nokia/time">
+    <interface name="com.nokia.time">
+        <method name="get_app_snooze">
+            <arg name="app" type="s" direction="in"/>
+            <arg name="snooze" type="i" direction="out"/>
+        </method>
+        <method name="set_app_snooze">
+            <arg name="app" type="s" direction="in"/>
+            <arg name="snooze" type="i" direction="in"/>
+            <arg name="success" type="b" direction="out"/>
+        </method>
+        <signal name="" />
+   </interface>
+</node>

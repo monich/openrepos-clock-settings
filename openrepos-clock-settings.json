@@ -1,0 +1,14 @@
+{
+    "translation_catalog" : "openrepos-clock-settings",
+    "entries": [
+        {
+            "path": "applications/jolla-clock.desktop",
+            "title": "Clock",
+            "type": "page",
+            "icon": "image://theme/icon-m-clock",
+            "params": {
+                "source": "/usr/share/openrepos-clock-settings/clocksettings.qml"
+            }
+        }
+    ]
+}

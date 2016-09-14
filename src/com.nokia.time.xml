@@ -11,6 +11,5 @@
             <arg name="snooze" type="i" direction="in"/>
             <arg name="success" type="b" direction="out"/>
         </method>
-        <signal name="" />
    </interface>
 </node>

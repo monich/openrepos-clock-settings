@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE node PUBLIC
+  "-//freedesktop//DTD D-Bus Object Introspection 1.0//EN"
+  "http://standards.freedesktop.org/dbus/1.0/introspect.dtd">
+<node name="/com/nokia/NonGraphicFeedback1">
+    <interface name="com.nokia.NonGraphicFeedback1">
+        <method name="Play">
+            <arg name="event" type="s" direction="in"/>
+            <arg name="properties" type="a(sv)"/>
+            <arg name="event_id" type="u" direction="out"/>
+            <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="QVariantMap"/>
+        </method>
+        <method name="Pause">
+            <arg name="event_id" type="u" direction="in"/>
+            <arg name="pause" type="b" direction="in"/>
+            <arg name="result" type="u" direction="out"/>
+        </method>
+        <method name="Stop">
+            <arg name="event_id" type="u" direction="in"/>
+            <arg name="result" type="u" direction="out"/>
+        </method>
+        <signal name="Status">
+            <arg name="event_id" type="u" direction="out"/>
+            <arg name="status" type="u" direction="out"/>
+        </signal>
+    </interface>
+</node>

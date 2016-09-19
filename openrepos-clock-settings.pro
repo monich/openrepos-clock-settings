@@ -8,6 +8,11 @@ TARGETPATH = $$[QT_INSTALL_QML]/$${PREFIX}/clock/settings
 QT += qml dbus
 CONFIG += plugin
 QMAKE_CXXFLAGS += -Wno-unused-parameter
+INCLUDEPATH += src
+
+CONFIG(debug, debug|release) {
+    DEFINES += DEBUGLOG
+}
 
 import.files = src/qmldir
 import.path = $$TARGETPATH
@@ -28,19 +33,31 @@ OTHER_FILES += \
 
 SOURCES += \
   src/clocksettings.cpp \
-  src/clocksettingsplugin.cpp
+  src/clocksettingsplugin.cpp \
+  src/profilevalueinfo.cpp
 
 HEADERS += \
   src/clocksettings.h \
-  src/clocksettingsplugin.h
+  src/clocksettingsplugin.h \
+  src/profilevalueinfo.h
 
 INSTALLS += target import settings_qml settings_json
 
 # D-Bus interfaces
-DBUS_INTERFACES += timed
 timed.files = src/com.nokia.time.xml
 timed.header_flags = -N -c TimeDaemon
 timed.source_flags = -N -c TimeDaemon
+DBUS_INTERFACES += timed
+
+profiled.files = src/com.nokia.profiled.xml
+profiled.header_flags = -N -c ProfileDaemon -i profilevalueinfo.h
+profiled.source_flags = -N -c ProfileDaemon
+DBUS_INTERFACES += profiled
+
+ngfd.files = src/com.nokia.NonGraphicFeedback1.xml
+ngfd.header_flags = -N -c FeedbackDaemon
+ngfd.source_flags = -N -c FeedbackDaemon
+DBUS_INTERFACES += ngfd
 
 # Translations
 TRANSLATIONS_PATH = /usr/share/translations

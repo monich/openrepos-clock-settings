@@ -18,5 +18,10 @@
         <extracomment>Slider label</extracomment>
         <translation>Snooze interval</translation>
     </message>
+    <message id="settings_clock-la-alarm-volume">
+        <source>Alarm volume</source>
+        <extracomment>Slider label</extracomment>
+        <translation>Alarm volume</translation>
+    </message>
 </context>
 </TS>

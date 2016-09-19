@@ -43,10 +43,15 @@ Page {
 
     ClockSettings {
         id: settings
-        onSnoozeChanged: slider.value = snooze
+        alarmPlaying: volumeSlider.down
+        onSnoozeChanged: snoozeSlider.value = snooze
+        onVolumeChanged: volumeSlider.value = volume
     }
 
-    Component.onCompleted: slider.value = settings.snooze
+    Component.onCompleted: {
+        snoozeSlider.value = settings.snooze
+        volumeSlider.value = settings.volume
+    }
 
     SilicaFlickable {
         anchors.fill: parent
@@ -55,9 +60,6 @@ Page {
         Column {
             id: column
             width: parent.width
-            visible: opacity > 0
-            opacity: settings.queryPending ? 0 : 1
-            Behavior on opacity { FadeAnimation {} }
 
             PageHeader {
                 //: Clock settings page header
@@ -66,10 +68,13 @@ Page {
             }
 
             Slider {
-                id: slider
-                minimumValue: ClockSettings.MinSnoozeInterval
-                maximumValue: ClockSettings.MaxSnoozeInterval
-                stepSize: 60
+                id: snoozeSlider
+                visible: opacity > 0
+                opacity: settings.snoozeQueryFinished ? 1 : 0
+                Behavior on opacity { FadeAnimation {} }
+                minimumValue: ClockSettings.SnoozeMin
+                maximumValue: ClockSettings.SnoozeMax
+                stepSize: ClockSettings.SnoozeStep
                 //: Minutes (shortened)
                 //% "min"
                 valueText: value/60 + " " + qsTrId("settings_clock-la-min")
@@ -78,6 +83,22 @@ Page {
                 label: qsTrId("settings_clock-la-snooze-interval")
                 width: page.width
                 onSliderValueChanged: settings.snooze = value
+            }
+
+            Slider {
+                id: volumeSlider
+                visible: opacity > 0
+                opacity: (settings.snoozeQueryFinished && settings.volumeQueryFinished) ? 1 : 0
+                Behavior on opacity { FadeAnimation {} }
+                minimumValue: ClockSettings.VolumeMin
+                maximumValue: ClockSettings.VolumeMax
+                stepSize: ClockSettings.VolumeStep
+                valueText: value
+                //: Slider label
+                //% "Alarm volume"
+                label: qsTrId("settings_clock-la-alarm-volume")
+                width: page.width
+                onSliderValueChanged: settings.volume = value
             }
         }
     }

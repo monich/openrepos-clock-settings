@@ -37,50 +37,98 @@
 #ifndef CLOCKSETTINGS_H
 #define CLOCKSETTINGS_H
 
-#include <QObject>
-#include <QString>
+#include "profilevalueinfo.h"
 
 class TimeDaemon;
+class ProfileDaemon;
+class FeedbackDaemon;
 class QDBusPendingCallWatcher;
 
 class ClockSettings : public QObject
 {
     Q_OBJECT
-    Q_ENUMS(Constants)
-    Q_PROPERTY(bool queryPending READ queryPending NOTIFY queryPendingChanged)
+    Q_ENUMS(SnoozeConstants)
+    Q_ENUMS(VolumeConstants)
     Q_PROPERTY(int snooze READ snooze WRITE setSnooze NOTIFY snoozeChanged)
+    Q_PROPERTY(int volume READ volume WRITE setVolume NOTIFY volumeChanged)
+    Q_PROPERTY(bool alarmPlaying READ alarmPlaying WRITE setAlarmPlaying NOTIFY alarmPlayingChanged)
+    Q_PROPERTY(bool snoozeQueryFinished READ snoozeQueryFinished NOTIFY snoozeQueryFinishedChanged)
+    Q_PROPERTY(bool volumeQueryFinished READ volumeQueryFinished NOTIFY volumeQueryFinishedChanged)
 
 public:
-    enum Constants {
-        MinSnoozeInterval = 60,
-        MaxSnoozeInterval = 1800,
-        DefaultSnoozeInterval = 300
+    enum SnoozeConstants {
+        SnoozeMin = 60,
+        SnoozeMax = 1800,
+        SnoozeStep = 60,
+        SnoozeDefault = 300
+    };
+
+    enum VolumeConstants {
+        VolumeMin = 0,
+        VolumeMax = 100,
+        VolumeStep = 1,
+        VolumeDefault = 100
     };
 
     ClockSettings(QObject* aParent = NULL);
 
-    bool queryPending() const;
     int snooze() const;
     void setSnooze(int aValue);
+    bool snoozeQueryFinished() const;
+
+    int volume() const;
+    void setVolume(int aValue);
+    bool volumeQueryFinished() const;
+
+    bool alarmPlaying() const;
+    void setAlarmPlaying(bool aValue);
+
+private:
+    void queryVolume();
+    void stopPlaying();
 
 private Q_SLOTS:
-    void onQueryFinished(QDBusPendingCallWatcher* aCall);
+    void onGetProfilesFinished(QDBusPendingCallWatcher* aCall);
+    void onGetProfileFinished(QDBusPendingCallWatcher* aCall);
+    void onGetVolumeFinished(QDBusPendingCallWatcher* aCall);
+    void onGetAppSnoozeFinished(QDBusPendingCallWatcher* aCall);
+    void onPlayFinished(QDBusPendingCallWatcher* aCall);
+    void onProfileChanged(bool aChanged, bool aActive, QString aProfile,
+        ProfileValueInfoList aValues);
 
 Q_SIGNALS:
     void snoozeChanged();
-    void queryPendingChanged();
+    void volumeChanged();
+    void alarmPlayingChanged();
+    void snoozeQueryFinishedChanged();
+    void volumeQueryFinishedChanged();
 
 private:
     int iSnooze;
-    bool iSnoozeChanged;
-    bool iQueryPending;
+    int iVolume;
+    bool iAlarmPlaying;
+    QString iAlarmEvent;
+    uint iAlarmEventId;
+    bool iSnoozeQueryFinished;
+    bool iVolumeQueryFinished;
     QString iClockApp;
+    QString iVolumeKey;
+    QString iProfile;
+    QStringList iProfileList;
     TimeDaemon* iTimeDaemon;
+    ProfileDaemon* iProfileDaemon;
+    FeedbackDaemon* iFeedbackDaemon;
 };
 
-inline bool ClockSettings::queryPending() const
-    { return iQueryPending; }
 inline int ClockSettings::snooze() const
     { return iSnooze; }
+inline int ClockSettings::volume() const
+    { return iVolume; }
+inline bool ClockSettings::alarmPlaying() const
+    { return iAlarmPlaying; }
+inline bool ClockSettings::snoozeQueryFinished() const
+    { return iSnoozeQueryFinished; }
+inline bool ClockSettings::volumeQueryFinished() const
+    { return iVolumeQueryFinished; }
 
 #endif // EPIPHANGRABBER_H

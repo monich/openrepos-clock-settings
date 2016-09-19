@@ -34,26 +34,51 @@
  * any official policies, either expressed or implied.
  */
 
-#include "clocksettingsplugin.h"
-#include "clocksettings.h"
 #include "profilevalueinfo.h"
-#include <QtQml/QQmlEngine>
-#include <QtQml/QtQml>
-#include <QDebug>
 
-void ClockSettingsPlugin::initializeEngine(QQmlEngine* aEngine, const char* aUri)
+QDBusArgument& operator<<(QDBusArgument& aArg, const ProfileValueInfo& aInfo)
 {
-    qDebug() << aUri;
-    Q_UNUSED(aUri)
-    Q_UNUSED(aEngine)
-    Q_ASSERT(QLatin1String(aUri) == QLatin1String(PLUGIN_ID));
+    aArg.beginStructure();
+    aArg << aInfo.key << aInfo.value << aInfo.info;
+    aArg.endStructure();
+    return aArg;
 }
 
-void ClockSettingsPlugin::registerTypes(const char* aUri)
+const QDBusArgument& operator>>(const QDBusArgument& aArg, ProfileValueInfo& aInfo)
 {
-    qDebug() << aUri;
-    Q_UNUSED(aUri)
-    Q_ASSERT(QLatin1String(aUri) == QLatin1String(PLUGIN_ID));
-    qmlRegisterType<ClockSettings>(aUri, 1, 0, "ClockSettings");
-    ProfileValueInfo::registerTypes();
+    aArg.beginStructure();
+    aArg >> aInfo.key >> aInfo.value >> aInfo.info;
+    aArg.endStructure();
+    return aArg;
+}
+
+QDebug& operator<<(QDebug& aDebug, const ProfileValueInfo& aInfo)
+{
+    return aDebug << "(" << aInfo.key << "," << aInfo.value << "," << aInfo.info << ")";
+}
+
+ProfileValueInfo::ProfileValueInfo(const ProfileValueInfo& aInfo):
+    key(aInfo.key),
+    value(aInfo.value),
+    info(aInfo.info)
+{
+}
+
+ProfileValueInfo& ProfileValueInfo::operator=(const ProfileValueInfo& aInfo)
+{
+    key = aInfo.key;
+    value = aInfo.value;
+    info = aInfo.info;
+    return *this;
+}
+
+bool ProfileValueInfo::equals(const ProfileValueInfo& aInfo) const
+{
+    return key == aInfo.key && value == aInfo.value && info == aInfo.info;
+}
+
+void ProfileValueInfo::registerTypes()
+{
+    qDBusRegisterMetaType<ProfileValueInfo>();
+    qDBusRegisterMetaType<ProfileValueInfoList>();
 }

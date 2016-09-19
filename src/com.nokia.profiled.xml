@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE node PUBLIC
+  "-//freedesktop//DTD D-Bus Object Introspection 1.0//EN"
+  "http://standards.freedesktop.org/dbus/1.0/introspect.dtd">
+<node name="/com/nokia/profiled">
+    <interface name="com.nokia.profiled">
+        <method name="get_profiles">
+            <arg name="profiles" type="as" direction="out"/>
+        </method>
+        <method name="get_profile">
+            <arg name="profile" type="s" direction="out"/>
+        </method>
+        <method name="get_value">
+            <arg name="profile" type="s" direction="in"/>
+            <arg name="key" type="s" direction="in"/>
+            <arg name="value" type="s" direction="out"/>
+        </method>
+        <method name="set_value">
+            <arg name="profile" type="s" direction="in"/>
+            <arg name="key" type="s" direction="in"/>
+            <arg name="value" type="s" direction="in"/>
+            <arg name="success" type="b" direction="out"/>
+        </method>
+        <signal name="profile_changed">
+            <arg name="changed" type="b"/>
+            <arg name="active" type="b"/>
+            <arg name="profile" type="s"/>
+            <arg name="values" type="a(sss)"/>
+            <annotation name="org.qtproject.QtDBus.QtTypeName.In3" value="ProfileValueInfoList"/>
+        </signal>
+    </interface>
+</node>

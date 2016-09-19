@@ -18,5 +18,10 @@
         <extracomment>Slider label</extracomment>
         <translation>Повтор будильника</translation>
     </message>
+    <message id="settings_clock-la-alarm-volume">
+        <source>Alarm volume</source>
+        <extracomment>Slider label</extracomment>
+        <translation>Громкость звонка</translation>
+    </message>
 </context>
 </TS>

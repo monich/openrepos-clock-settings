@@ -1,5 +1,7 @@
-<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
-    "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE node PUBLIC
+  "-//freedesktop//DTD D-Bus Object Introspection 1.0//EN"
+  "http://standards.freedesktop.org/dbus/1.0/introspect.dtd">
 <node name="/com/nokia/time">
     <interface name="com.nokia.time">
         <method name="get_app_snooze">

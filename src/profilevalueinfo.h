@@ -34,26 +34,40 @@
  * any official policies, either expressed or implied.
  */
 
-#include "clocksettingsplugin.h"
-#include "clocksettings.h"
-#include "profilevalueinfo.h"
-#include <QtQml/QQmlEngine>
-#include <QtQml/QtQml>
+#ifndef PROFILE_VALUE_INFO_H
+#define PROFILE_VALUE_INFO_H
+
+#include <QtDBus/QtDBus>
 #include <QDebug>
 
-void ClockSettingsPlugin::initializeEngine(QQmlEngine* aEngine, const char* aUri)
+class ProfileValueInfo
 {
-    qDebug() << aUri;
-    Q_UNUSED(aUri)
-    Q_UNUSED(aEngine)
-    Q_ASSERT(QLatin1String(aUri) == QLatin1String(PLUGIN_ID));
-}
+public:
+    ProfileValueInfo() {}
+    ProfileValueInfo& operator=(const ProfileValueInfo& aInfo);
+    ProfileValueInfo(const ProfileValueInfo& aInfo);
+    bool operator==(const ProfileValueInfo& Info) const;
+    bool operator!=(const ProfileValueInfo& Info) const;
+    bool equals(const ProfileValueInfo& Info) const;
 
-void ClockSettingsPlugin::registerTypes(const char* aUri)
-{
-    qDebug() << aUri;
-    Q_UNUSED(aUri)
-    Q_ASSERT(QLatin1String(aUri) == QLatin1String(PLUGIN_ID));
-    qmlRegisterType<ClockSettings>(aUri, 1, 0, "ClockSettings");
-    ProfileValueInfo::registerTypes();
-}
+    static void registerTypes();
+
+    QString key;
+    QString value;
+    QString info;
+};
+
+inline bool ProfileValueInfo::operator==(const ProfileValueInfo& aInfo) const
+    { return equals(aInfo); }
+inline bool ProfileValueInfo::operator!=(const ProfileValueInfo& aInfo) const
+    { return !equals(aInfo); }
+
+typedef QList<ProfileValueInfo> ProfileValueInfoList;
+QDBusArgument& operator<<(QDBusArgument& aArg, const ProfileValueInfo& aInfo);
+const QDBusArgument& operator>>(const QDBusArgument& aArg, ProfileValueInfo& aInfo);
+QDebug& operator<<(QDebug& aDebug, const ProfileValueInfo& aInfo);
+
+Q_DECLARE_METATYPE(ProfileValueInfo)
+Q_DECLARE_METATYPE(ProfileValueInfoList)
+
+#endif // PROFILE_VALUE_INFO_H

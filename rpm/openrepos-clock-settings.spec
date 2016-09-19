@@ -1,6 +1,6 @@
 Name:       openrepos-clock-settings
 Summary:    Clock settings
-Version:    1.0.0
+Version:    1.0.1
 Release:    1
 Group:      System/System Control
 License:    BSD
@@ -20,6 +20,9 @@ Settings for the Jolla clock application
 %setup -q -n %{name}-%{version}
 
 %build
+# Workaround for wrong clock in Mer OBS
+date
+touch openrepos-clock-settings.pro
 %qmake5
 make %{?jobs:-j%jobs}
 
@@ -34,5 +37,8 @@ rm -rf %{buildroot}
 %{_datadir}/translations/%{name}*.qm
 
 %changelog
+* Mon Sep 19 2016 Slava Monich <slava.monich@jolla.com> 1.0.1
+- Allow to configure alarm volume
+
 * Wed Sep 14 2016 Slava Monich <slava.monich@jolla.com> 1.0.0
 - Initial release

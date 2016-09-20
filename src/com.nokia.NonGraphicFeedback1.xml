@@ -10,18 +10,9 @@
             <arg name="event_id" type="u" direction="out"/>
             <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="QVariantMap"/>
         </method>
-        <method name="Pause">
-            <arg name="event_id" type="u" direction="in"/>
-            <arg name="pause" type="b" direction="in"/>
-            <arg name="result" type="u" direction="out"/>
-        </method>
         <method name="Stop">
             <arg name="event_id" type="u" direction="in"/>
             <arg name="result" type="u" direction="out"/>
         </method>
-        <signal name="Status">
-            <arg name="event_id" type="u" direction="out"/>
-            <arg name="status" type="u" direction="out"/>
-        </signal>
     </interface>
 </node>

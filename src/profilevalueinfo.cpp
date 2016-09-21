@@ -36,6 +36,9 @@
 
 #include "profilevalueinfo.h"
 
+#include <QDBusArgument>
+#include <QDBusMetaType>
+
 QDBusArgument& operator<<(QDBusArgument& aArg, const ProfileValueInfo& aInfo)
 {
     aArg.beginStructure();

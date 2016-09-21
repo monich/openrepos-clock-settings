@@ -37,8 +37,9 @@
 #ifndef PROFILE_VALUE_INFO_H
 #define PROFILE_VALUE_INFO_H
 
-#include <QtDBus/QtDBus>
+#include <QList>
 #include <QDebug>
+#include <QMetaType>
 
 class ProfileValueInfo
 {
@@ -63,8 +64,6 @@ inline bool ProfileValueInfo::operator!=(const ProfileValueInfo& aInfo) const
     { return !equals(aInfo); }
 
 typedef QList<ProfileValueInfo> ProfileValueInfoList;
-QDBusArgument& operator<<(QDBusArgument& aArg, const ProfileValueInfo& aInfo);
-const QDBusArgument& operator>>(const QDBusArgument& aArg, ProfileValueInfo& aInfo);
 QDebug& operator<<(QDebug& aDebug, const ProfileValueInfo& aInfo);
 
 Q_DECLARE_METATYPE(ProfileValueInfo)

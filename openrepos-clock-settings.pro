@@ -2,7 +2,7 @@ TEMPLATE = lib
 TARGET = clocksettings
 
 PREFIX = openrepos
-NAME = $${PREFIX}-clock-settings
+NAME = clock-settings
 TARGETPATH = $$[QT_INSTALL_QML]/$${PREFIX}/clock/settings
 
 QT += qml dbus
@@ -18,11 +18,11 @@ import.files = src/qmldir
 import.path = $$TARGETPATH
 target.path = $$TARGETPATH
 
-settings_qml.path = /usr/share/$${NAME}
+settings_qml.path = /usr/share/$${PREFIX}-$${NAME}
 settings_qml.files = qml/*.qml
 
 settings_json.path = /usr/share/jolla-settings/entries
-settings_json.files = $${NAME}.json
+settings_json.files = $${PREFIX}-$${NAME}.json
 
 OTHER_FILES += \
   *.json \
@@ -62,29 +62,41 @@ DBUS_INTERFACES += ngfd
 # Translations
 TRANSLATIONS_PATH = /usr/share/translations
 TRANSLATION_SOURCES = $${_PRO_FILE_PWD_}/qml
-TRANSLATION_FILES = \
-  clock-settings-ru \
-  clock-settings
 
-for(t, TRANSLATION_FILES) {
-    suffix = $$replace(t,-,_)
-    in = $${_PRO_FILE_PWD_}/translations/openrepos-$${t}
-    out = $${OUT_PWD}/translations/$${PREFIX}-$${t}
+defineTest(addTrFile) {
+    in = $${_PRO_FILE_PWD_}/translations/$${PREFIX}-$$1
+    out = $${OUT_PWD}/translations/$${PREFIX}-$$1
 
-    lupdate_target = lupdate_$$suffix
-    lrelease_target = lrelease_$$suffix
+    s = $$replace(1,-,_)
+    lupdate_target = lupdate_$$s
+    lrelease_target = lrelease_$$s
 
     $${lupdate_target}.commands = lupdate -noobsolete $${TRANSLATION_SOURCES} -ts \"$${in}.ts\" && \
         mkdir -p \"$${OUT_PWD}/translations\" &&  [ \"$${in}.ts\" != \"$${out}.ts\" ] && \
         cp -af \"$${in}.ts\" \"$${out}.ts\" || :
 
-    $${lrelease_target}.target = \"$${out}.qm\"
+    $${lrelease_target}.target = $${out}.qm
     $${lrelease_target}.depends = $${lupdate_target}
     $${lrelease_target}.commands = lrelease -idbased \"$${out}.ts\"
 
     QMAKE_EXTRA_TARGETS += $${lrelease_target} $${lupdate_target}
-    PRE_TARGETDEPS += \"$${out}.qm\"
-    qm.files += \"$${out}.qm\"
+    PRE_TARGETDEPS += $${out}.qm
+    qm.files += $${out}.qm
+
+    export($${lupdate_target}.commands)
+    export($${lrelease_target}.target)
+    export($${lrelease_target}.depends)
+    export($${lrelease_target}.commands)
+    export(QMAKE_EXTRA_TARGETS)
+    export(PRE_TARGETDEPS)
+    export(qm.files)
+}
+
+LANGUAGES = pl ru
+
+addTrFile($${NAME})
+for(l, LANGUAGES) {
+    addTrFile($${NAME}-$$l)
 }
 
 qm.path = $$TRANSLATIONS_PATH

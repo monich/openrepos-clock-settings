@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2016 Jolla Ltd.
- * Contact: Slava Monich <slava.monich@jolla.com>
+ * Copyright (C) 2016-2018 Jolla Ltd.
+ * Copyright (C) 2016-2018 Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
  *
@@ -38,6 +38,8 @@
 #define CLOCKSETTINGS_H
 
 #include "profilevalueinfo.h"
+
+#include <QStringList>
 
 class TimeDaemon;
 class ProfileDaemon;

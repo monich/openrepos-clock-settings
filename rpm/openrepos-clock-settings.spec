@@ -1,6 +1,6 @@
 Name:       openrepos-clock-settings
 Summary:    Clock settings
-Version:    1.0.1
+Version:    1.0.2
 Release:    1
 Group:      System/System Control
 License:    BSD
@@ -37,6 +37,9 @@ rm -rf %{buildroot}
 %{_datadir}/translations/%{name}*.qm
 
 %changelog
+* Mon Jan 29 2018 Slava Monich <slava.monich@jolla.com> 1.0.2
+- Polish translations
+
 * Mon Sep 19 2016 Slava Monich <slava.monich@jolla.com> 1.0.1
 - Allow to configure alarm volume
 

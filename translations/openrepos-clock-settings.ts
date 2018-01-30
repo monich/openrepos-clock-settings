@@ -21,7 +21,7 @@
     <message id="settings_clock-la-alarm-volume">
         <source>Alarm volume</source>
         <extracomment>Slider label</extracomment>
-        <translation>Volume de l'alarme</translation>
+        <translation>Volume de l&apos;alarme</translation>
     </message>
 </context>
 </TS>

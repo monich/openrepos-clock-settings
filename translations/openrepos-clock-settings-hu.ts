@@ -6,7 +6,7 @@
     <message id="settings_clock-he-clock">
         <source>Clock</source>
         <extracomment>Clock settings page header</extracomment>
-        <translation>Ébresztő beállításai</translation>
+        <translation>Óra</translation>
     </message>
     <message id="settings_clock-la-min">
         <source>min</source>

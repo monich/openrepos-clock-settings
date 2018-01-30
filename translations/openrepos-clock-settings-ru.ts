@@ -21,7 +21,7 @@
     <message id="settings_clock-la-alarm-volume">
         <source>Alarm volume</source>
         <extracomment>Slider label</extracomment>
-        <translation>Громкость звонка</translation>
+        <translation>Громкость будильника</translation>
     </message>
 </context>
 </TS>

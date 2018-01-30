@@ -1,6 +1,6 @@
 Name:       openrepos-clock-settings
 Summary:    Clock settings
-Version:    1.0.2
+Version:    1.0.3
 Release:    1
 Group:      System/System Control
 License:    BSD
@@ -37,6 +37,9 @@ rm -rf %{buildroot}
 %{_datadir}/translations/%{name}*.qm
 
 %changelog
+* Tue Jan 30 2018 Slava Monich <slava.monich@jolla.com> 1.0.3
+- French translations
+
 * Mon Jan 29 2018 Slava Monich <slava.monich@jolla.com> 1.0.2
 - Polish translations
 

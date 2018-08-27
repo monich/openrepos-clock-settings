@@ -133,4 +133,4 @@ inline bool ClockSettings::snoozeQueryFinished() const
 inline bool ClockSettings::volumeQueryFinished() const
     { return iVolumeQueryFinished; }
 
-#endif // EPIPHANGRABBER_H
+#endif // CLOCKSETTINGS_H

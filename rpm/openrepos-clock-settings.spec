@@ -1,8 +1,7 @@
 Name:       openrepos-clock-settings
 Summary:    Clock settings
-Version:    1.0.6
+Version:    1.0.7
 Release:    1
-Group:      System/System Control
 License:    BSD
 URL:        https://github.com/monich/openrepos-clock-settings
 Source0:    %{name}-%{version}.tar.bz2
@@ -12,6 +11,7 @@ BuildRequires: pkgconfig(Qt5Qml)
 BuildRequires: pkgconfig(Qt5Core)
 BuildRequires: pkgconfig(Qt5DBus)
 BuildRequires: qt5-qttools-linguist
+Requires: jolla-clock
 
 %description
 Settings for the Jolla clock application
@@ -20,9 +20,6 @@ Settings for the Jolla clock application
 %setup -q -n %{name}-%{version}
 
 %build
-# Workaround for wrong clock in Mer OBS
-date
-touch openrepos-clock-settings.pro
 %qmake5
 make %{?jobs:-j%jobs}
 
@@ -37,6 +34,11 @@ rm -rf %{buildroot}
 %{_datadir}/translations/%{name}*.qm
 
 %changelog
+* Mon Nov 9 2020 Slava Monich <slava.monich@jolla.com> 1.0.7
+- Improved page initialization
+- Require jolla-clock
+- Finnish translations
+
 * Thu Feb 1 2018 Slava Monich <slava.monich@jolla.com> 1.0.6
 - Spanish translations
 

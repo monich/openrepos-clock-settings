@@ -1,6 +1,6 @@
 Name:       openrepos-clock-settings
 Summary:    Clock settings
-Version:    1.0.7
+Version:    1.0.8
 Release:    1
 License:    BSD
 URL:        https://github.com/monich/openrepos-clock-settings
@@ -34,6 +34,9 @@ rm -rf %{buildroot}
 %{_datadir}/translations/%{name}*.qm
 
 %changelog
+* Mon Nov 9 2020 Slava Monich <slava.monich@jolla.com> 1.0.8
+- Chinese translations
+
 * Mon Nov 9 2020 Slava Monich <slava.monich@jolla.com> 1.0.7
 - Improved page initialization
 - Require jolla-clock

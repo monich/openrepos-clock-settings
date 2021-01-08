@@ -29,7 +29,7 @@ rm -rf %{buildroot}
 
 %files
 %{_datadir}/%{name}
-%{_libdir}/qt5/qml/openrepos/clock/settings
+%{_libdir}/qt5/qml/openrepos/alert/settings
 %{_datadir}/jolla-settings/entries/%{name}.json
 %{_datadir}/translations/%{name}*.qm
 

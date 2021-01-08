@@ -1,9 +1,9 @@
 TEMPLATE = lib
-TARGET = clocksettings
+TARGET = alertsettings
 
 PREFIX = openrepos
 NAME = clock-settings
-TARGETPATH = $$[QT_INSTALL_QML]/$${PREFIX}/clock/settings
+TARGETPATH = $$[QT_INSTALL_QML]/$${PREFIX}/alert/settings
 
 QT += qml dbus
 CONFIG += plugin
@@ -32,14 +32,15 @@ OTHER_FILES += \
   rpm/*.spec
 
 SOURCES += \
-  src/clocksettings.cpp \
-  src/clocksettingsplugin.cpp \
-  src/profilevalueinfo.cpp
+  src/alertsettingsplugin.cpp \
+  src/profilevalueinfo.cpp \
+  src/snoozesettings.cpp  \
+  src/volumesettings.cpp
 
 HEADERS += \
-  src/clocksettings.h \
-  src/clocksettingsplugin.h \
-  src/profilevalueinfo.h
+  src/profilevalueinfo.h \
+  src/snoozesettings.h \
+  src/volumesettings.h
 
 INSTALLS += target import settings_qml settings_json
 

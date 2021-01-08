@@ -2,12 +2,14 @@
     "translation_catalog" : "openrepos-clock-settings",
     "entries": [
         {
-            "path": "applications/jolla-clock.desktop",
-            "title": "Clock",
+            "path": "system_settings/system/openrepos-alert-settings",
+            "title": "Alerts",
+            "translation_id": "openrepos_alert_settings-he-title",
             "type": "page",
-            "icon": "image://theme/icon-m-clock",
+            "icon": "image://theme/icon-m-vibration",
+            "order": 100000,
             "params": {
-                "source": "/usr/share/openrepos-clock-settings/clocksettings.qml"
+                "source": "/usr/share/openrepos-clock-settings/alertsettings.qml"
             }
         }
     ]

@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2016-2018 Jolla Ltd.
- * Copyright (C) 2016-2018 Slava Monich <slava.monich@jolla.com>
+ * Copyright (C) 2021 Jolla Ltd.
+ * Copyright (C) 2021 Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
  *
@@ -13,9 +13,9 @@
  *   2. Redistributions in binary form must reproduce the above copyright
  *      notice, this list of conditions and the following disclaimer in the
  *      documentation and/or other materials provided with the distribution.
- *   3. Neither the name of Jolla Ltd nor the names of its contributors may
- *      be used to endorse or promote products derived from this software
- *      without specific prior written permission.
+ *   3. Neither the names of the copyright holders nor the names of its
+ *      contributors may be used to endorse or promote products derived
+ *      from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -34,37 +34,28 @@
  * any official policies, either expressed or implied.
  */
 
-#ifndef CLOCKSETTINGS_H
-#define CLOCKSETTINGS_H
+#ifndef VOLUMESETTINGS_H
+#define VOLUMESETTINGS_H
 
 #include "profilevalueinfo.h"
 
 #include <QStringList>
 
-class TimeDaemon;
 class ProfileDaemon;
 class FeedbackDaemon;
 class QDBusPendingCallWatcher;
 
-class ClockSettings : public QObject
+class VolumeSettings : public QObject
 {
     Q_OBJECT
-    Q_ENUMS(SnoozeConstants)
     Q_ENUMS(VolumeConstants)
-    Q_PROPERTY(int snooze READ snooze WRITE setSnooze NOTIFY snoozeChanged)
+    Q_PROPERTY(QString alarmEvent READ alarmEvent WRITE setAlarmEvent NOTIFY alarmEventChanged)
+    Q_PROPERTY(QString volumeKey READ volumeKey WRITE setVolumeKey NOTIFY volumeKeyChanged)
     Q_PROPERTY(int volume READ volume WRITE setVolume NOTIFY volumeChanged)
     Q_PROPERTY(bool alarmPlaying READ alarmPlaying WRITE setAlarmPlaying NOTIFY alarmPlayingChanged)
-    Q_PROPERTY(bool snoozeQueryFinished READ snoozeQueryFinished NOTIFY snoozeQueryFinishedChanged)
     Q_PROPERTY(bool volumeQueryFinished READ volumeQueryFinished NOTIFY volumeQueryFinishedChanged)
 
 public:
-    enum SnoozeConstants {
-        SnoozeMin = 60,
-        SnoozeMax = 1800,
-        SnoozeStep = 60,
-        SnoozeDefault = 300
-    };
-
     enum VolumeConstants {
         VolumeMin = 0,
         VolumeMax = 100,
@@ -72,11 +63,13 @@ public:
         VolumeDefault = 100
     };
 
-    ClockSettings(QObject* aParent = NULL);
+    VolumeSettings(QObject* aParent = Q_NULLPTR);
 
-    int snooze() const;
-    void setSnooze(int aValue);
-    bool snoozeQueryFinished() const;
+    QString alarmEvent() const;
+    void setAlarmEvent(QString aEvent);
+
+    QString volumeKey() const;
+    void setVolumeKey(QString aKey);
 
     int volume() const;
     void setVolume(int aValue);
@@ -93,44 +86,41 @@ private Q_SLOTS:
     void onGetProfilesFinished(QDBusPendingCallWatcher* aCall);
     void onGetProfileFinished(QDBusPendingCallWatcher* aCall);
     void onGetVolumeFinished(QDBusPendingCallWatcher* aCall);
-    void onGetAppSnoozeFinished(QDBusPendingCallWatcher* aCall);
     void onPlayFinished(QDBusPendingCallWatcher* aCall);
     void onProfileChanged(bool aChanged, bool aActive, QString aProfile,
         ProfileValueInfoList aValues);
 
 Q_SIGNALS:
-    void snoozeChanged();
+    void alarmEventChanged();
+    void volumeKeyChanged();
     void volumeChanged();
     void alarmPlayingChanged();
-    void snoozeQueryFinishedChanged();
     void volumeQueryFinishedChanged();
 
 private:
-    int iSnooze;
     int iVolume;
     bool iAlarmPlaying;
     QString iAlarmEvent;
     uint iAlarmEventId;
-    bool iSnoozeQueryFinished;
     bool iVolumeQueryFinished;
-    QString iClockApp;
     QString iVolumeKey;
     QString iProfile;
     QStringList iProfileList;
-    TimeDaemon* iTimeDaemon;
     ProfileDaemon* iProfileDaemon;
     FeedbackDaemon* iFeedbackDaemon;
+    QDBusPendingCallWatcher* iProfileQuery;
+    QDBusPendingCallWatcher* iVolumeQuery;
 };
 
-inline int ClockSettings::snooze() const
-    { return iSnooze; }
-inline int ClockSettings::volume() const
+inline QString VolumeSettings::alarmEvent() const
+    { return iAlarmEvent; }
+inline QString VolumeSettings::volumeKey() const
+    { return iVolumeKey; }
+inline int VolumeSettings::volume() const
     { return iVolume; }
-inline bool ClockSettings::alarmPlaying() const
+inline bool VolumeSettings::alarmPlaying() const
     { return iAlarmPlaying; }
-inline bool ClockSettings::snoozeQueryFinished() const
-    { return iSnoozeQueryFinished; }
-inline bool ClockSettings::volumeQueryFinished() const
+inline bool VolumeSettings::volumeQueryFinished() const
     { return iVolumeQueryFinished; }
 
 #endif // CLOCKSETTINGS_H

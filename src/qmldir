@@ -1,2 +1,2 @@
-module openrepos.clock.settings
-plugin clocksettings
+module openrepos.alert.settings
+plugin alertsettings

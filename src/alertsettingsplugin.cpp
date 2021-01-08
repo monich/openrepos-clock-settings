@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2016 Jolla Ltd.
- * Contact: Slava Monich <slava.monich@jolla.com>
+ * Copyright (C) 2016-2021 Jolla Ltd.
+ * Copyright (C) 2016-2021 Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
  *
@@ -13,9 +13,9 @@
  *   2. Redistributions in binary form must reproduce the above copyright
  *      notice, this list of conditions and the following disclaimer in the
  *      documentation and/or other materials provided with the distribution.
- *   3. Neither the name of Jolla Ltd nor the names of its contributors may
- *      be used to endorse or promote products derived from this software
- *      without specific prior written permission.
+ *   3. Neither the names of the copyright holders nor the names of its
+ *      contributors may be used to endorse or promote products derived
+ *      from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -34,26 +34,46 @@
  * any official policies, either expressed or implied.
  */
 
-#include "clocksettingsplugin.h"
-#include "clocksettings.h"
+#include "snoozesettings.h"
+#include "volumesettings.h"
 #include "profilevalueinfo.h"
-#include <QtQml/QQmlEngine>
-#include <QtQml/QtQml>
-#include <QDebug>
 
-void ClockSettingsPlugin::initializeEngine(QQmlEngine* aEngine, const char* aUri)
+#include <QDebug>
+#include <QtQml>
+
+#ifdef DEBUGLOG
+#  define DBG(expr) qDebug() << expr
+#  define ASSERT(expr) Q_ASSERT(expr)
+#else
+#  define DBG(expr) ((void)0)
+#  define ASSERT(expr) ((void)0)
+#endif
+
+#define PLUGIN_ID "openrepos.alert.settings"
+
+class AlertSettingsPlugin : public QQmlExtensionPlugin
 {
-    qDebug() << aUri;
-    Q_UNUSED(aUri)
-    Q_UNUSED(aEngine)
-    Q_ASSERT(QLatin1String(aUri) == QLatin1String(PLUGIN_ID));
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID PLUGIN_ID)
+
+public:
+    void initializeEngine(QQmlEngine* aEngine, const char* aUri) Q_DECL_OVERRIDE;
+    void registerTypes(const char* aUri) Q_DECL_OVERRIDE;
+};
+
+void AlertSettingsPlugin::initializeEngine(QQmlEngine*, const char* aUri)
+{
+    DBG(aUri);
+    ASSERT(QLatin1String(aUri) == QLatin1String(PLUGIN_ID));
 }
 
-void ClockSettingsPlugin::registerTypes(const char* aUri)
+void AlertSettingsPlugin::registerTypes(const char* aUri)
 {
-    qDebug() << aUri;
-    Q_UNUSED(aUri)
-    Q_ASSERT(QLatin1String(aUri) == QLatin1String(PLUGIN_ID));
-    qmlRegisterType<ClockSettings>(aUri, 1, 0, "ClockSettings");
+    DBG(aUri);
+    ASSERT(QLatin1String(aUri) == QLatin1String(PLUGIN_ID));
+    qmlRegisterType<SnoozeSettings>(aUri, 1, 0, "SnoozeSettings");
+    qmlRegisterType<VolumeSettings>(aUri, 1, 0, "VolumeSettings");
     ProfileValueInfo::registerTypes();
 }
+
+#include "alertsettingsplugin.moc"

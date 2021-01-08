@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2016 Jolla Ltd.
- * Contact: Slava Monich <slava.monich@jolla.com>
+ * Copyright (C) 2021 Jolla Ltd.
+ * Copyright (C) 2021 Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
  *
@@ -13,9 +13,9 @@
  *   2. Redistributions in binary form must reproduce the above copyright
  *      notice, this list of conditions and the following disclaimer in the
  *      documentation and/or other materials provided with the distribution.
- *   3. Neither the name of Jolla Ltd nor the names of its contributors may
- *      be used to endorse or promote products derived from this software
- *      without specific prior written permission.
+ *   3. Neither the names of the copyright holders nor the names of its
+ *      contributors may be used to endorse or promote products derived
+ *      from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -34,8 +34,7 @@
  * any official policies, either expressed or implied.
  */
 
-#include "clocksettings.h"
-#include "time_interface.h"
+#include "volumesettings.h"
 #include "profiled_interface.h"
 #include "nongraphicfeedback1_interface.h"
 
@@ -46,67 +45,53 @@
 
 #define WARN(x) qWarning() << x
 #ifdef DEBUGLOG
-#  define DBG(x) qDebug() << x
+#  define DBG(expr) qDebug() << expr
+#  define ASSERT(expr) Q_ASSERT(expr)
 #else
 #  define DBG(expr) ((void)0)
+#  define ASSERT(expr) ((void)0)
 #endif
 
-#define TIMED_CONNECTION       QDBusConnection::systemBus()
-#define TIMED_SERVICE          "com.nokia.time"
-#define TIMED_PATH             "/com/nokia/time"
-#define CLOCK_APP             "nemoalarms"
+namespace {
+    const QString DEFAULT_PROFILE("general");
 
-#define PROFILED_CONNECTION    QDBusConnection::sessionBus()
-#define PROFILED_SERVICE       "com.nokia.profiled"
-#define PROFILED_PATH          "/com/nokia/profiled"
-#define DEFAULT_PROFILE        "general"
-#define ALARM_VOLUME_KEY       "clock.alert.volume"
+#define PROFILED_CONNECTION QDBusConnection::sessionBus()
+    const QString PROFILED_SERVICE("com.nokia.profiled");
+    const QString PROFILED_PATH("/com/nokia/profiled");
 
-#define NGFD_CONNECTION         QDBusConnection::systemBus()
-#define NGFD_SERVICE            "com.nokia.NonGraphicFeedback1.Backend"
-#define NGFD_PATH               "/com/nokia/NonGraphicFeedback1"
-#define NGFD_ALARM_EVENT        "clock"
+#define NGFD_CONNECTION QDBusConnection::systemBus()
+    const QString NGFD_SERVICE("com.nokia.NonGraphicFeedback1.Backend");
+    const QString NGFD_PATH("/com/nokia/NonGraphicFeedback1");
+}
 
-ClockSettings::ClockSettings(QObject* aParent) :
+VolumeSettings::VolumeSettings(QObject* aParent) :
     QObject(aParent),
-    iSnooze(SnoozeDefault),
     iVolume(VolumeDefault),
     iAlarmPlaying(false),
-    iAlarmEvent(NGFD_ALARM_EVENT),
     iAlarmEventId(0),
-    iSnoozeQueryFinished(false),
     iVolumeQueryFinished(false),
-    iClockApp(CLOCK_APP),
-    iVolumeKey(ALARM_VOLUME_KEY),
-    iTimeDaemon(new TimeDaemon(TIMED_SERVICE, TIMED_PATH, TIMED_CONNECTION, this)),
     iProfileDaemon(new ProfileDaemon(PROFILED_SERVICE, PROFILED_PATH, PROFILED_CONNECTION, this)),
-    iFeedbackDaemon(new FeedbackDaemon(NGFD_SERVICE, NGFD_PATH, NGFD_CONNECTION, this))
+    iFeedbackDaemon(new FeedbackDaemon(NGFD_SERVICE, NGFD_PATH, NGFD_CONNECTION, this)),
+    iProfileQuery(Q_NULLPTR),
+    iVolumeQuery(Q_NULLPTR)
 {
-    connect(new QDBusPendingCallWatcher(
-        iTimeDaemon->get_app_snooze(iClockApp), iTimeDaemon),
-        SIGNAL(finished(QDBusPendingCallWatcher*)),
-        SLOT(onGetAppSnoozeFinished(QDBusPendingCallWatcher*)));
-    connect(new QDBusPendingCallWatcher(
-        iProfileDaemon->get_profiles(), iProfileDaemon),
-        SIGNAL(finished(QDBusPendingCallWatcher*)),
-        SLOT(onGetProfilesFinished(QDBusPendingCallWatcher*)));
     connect(iProfileDaemon,
         SIGNAL(profile_changed(bool,bool,QString,ProfileValueInfoList)),
         SLOT(onProfileChanged(bool,bool,QString,ProfileValueInfoList)));
-}
-
-void ClockSettings::queryVolume()
-{
-    DBG("querying alarm volume for" << iProfile);
-    connect(new QDBusPendingCallWatcher(
-        iProfileDaemon->get_value(iProfile, iVolumeKey), iProfileDaemon),
+    connect(iProfileQuery = new QDBusPendingCallWatcher(
+        iProfileDaemon->get_profiles(), iProfileDaemon),
         SIGNAL(finished(QDBusPendingCallWatcher*)),
-        SLOT(onGetVolumeFinished(QDBusPendingCallWatcher*)));
+        SLOT(onGetProfilesFinished(QDBusPendingCallWatcher*)));
 }
 
-void ClockSettings::onGetProfilesFinished(QDBusPendingCallWatcher* aCall)
+void VolumeSettings::onGetProfilesFinished(QDBusPendingCallWatcher* aCall)
 {
     QDBusPendingReply<QStringList> reply = *aCall;
+
+    ASSERT(iProfileQuery == aCall);
+    iProfileQuery = Q_NULLPTR;
+    aCall->deleteLater();
+
     if (reply.isError()) {
         WARN(reply.error());
     } else {
@@ -116,35 +101,57 @@ void ClockSettings::onGetProfilesFinished(QDBusPendingCallWatcher* aCall)
             iProfile = DEFAULT_PROFILE;
             queryVolume();
         } else {
-            connect(new QDBusPendingCallWatcher(
+            connect(iProfileQuery = new QDBusPendingCallWatcher(
                 iProfileDaemon->get_profile(), iProfileDaemon),
                 SIGNAL(finished(QDBusPendingCallWatcher*)),
                 SLOT(onGetProfileFinished(QDBusPendingCallWatcher*)));
         }
     }
-    aCall->deleteLater();
 }
 
-void ClockSettings::onGetProfileFinished(QDBusPendingCallWatcher* aCall)
+void VolumeSettings::onGetProfileFinished(QDBusPendingCallWatcher* aCall)
 {
     QDBusPendingReply<QString> reply = *aCall;
+
+    ASSERT(iProfileQuery == aCall);
+    iProfileQuery = Q_NULLPTR;
+    aCall->deleteLater();
+
     if (reply.isError()) {
         WARN(reply.error());
         iProfile = DEFAULT_PROFILE;
     } else {
         iProfile = reply.value();
     }
+    DBG(iProfile);
     queryVolume();
-    aCall->deleteLater();
 }
 
-void ClockSettings::onGetVolumeFinished(QDBusPendingCallWatcher* aCall)
+void VolumeSettings::queryVolume()
+{
+    if (!iProfileQuery && !iProfile.isEmpty() && !iVolumeKey.isEmpty()) {
+        DBG("querying" << qPrintable(iVolumeKey) << "for" << qPrintable(iProfile));
+        delete iVolumeQuery;
+        iVolumeQuery = Q_NULLPTR;
+        connect(iVolumeQuery = new QDBusPendingCallWatcher(
+            iProfileDaemon->get_value(iProfile, iVolumeKey), iProfileDaemon),
+            SIGNAL(finished(QDBusPendingCallWatcher*)),
+            SLOT(onGetVolumeFinished(QDBusPendingCallWatcher*)));
+    }
+}
+
+void VolumeSettings::onGetVolumeFinished(QDBusPendingCallWatcher* aCall)
 {
     QDBusPendingReply<QString> reply = *aCall;
+
+    ASSERT(iVolumeQuery == aCall);
+    iVolumeQuery = Q_NULLPTR;
+    aCall->deleteLater();
+
     if (reply.isError()) {
         WARN(reply.error());
     } else {
-        QString str(reply.value());
+        const QString str(reply.value());
         DBG(str);
         bool ok = false;
         const int volume = str.toInt(&ok);
@@ -157,34 +164,15 @@ void ClockSettings::onGetVolumeFinished(QDBusPendingCallWatcher* aCall)
             Q_EMIT volumeQueryFinishedChanged();
         }
     }
-    aCall->deleteLater();
 }
 
-void ClockSettings::onGetAppSnoozeFinished(QDBusPendingCallWatcher* aCall)
-{
-    QDBusPendingReply<int> reply = *aCall;
-    if (reply.isError()) {
-        WARN(reply.error());
-    } else {
-        const int value = reply.value();
-        DBG(value);
-        iSnoozeQueryFinished = true;
-        if (iSnooze != value) {
-            iSnooze = value;
-            Q_EMIT snoozeChanged();
-        }
-        Q_EMIT snoozeQueryFinishedChanged();
-    }
-    aCall->deleteLater();
-}
-
-void ClockSettings::onProfileChanged(bool aChanged, bool aActive, QString aProfile,
-    ProfileValueInfoList aValues)
+void VolumeSettings::onProfileChanged(bool aChanged, bool aActive,
+    QString aProfile, ProfileValueInfoList aValues)
 {
     DBG(aProfile << aValues);
     if (aProfile == iProfile) {
         const int n = aValues.count();
-        for (int i=0; i<n; i++) {
+        for (int i = 0; i < n; i++) {
             const ProfileValueInfo& value = aValues.at(i);
             if (value.key == iVolumeKey) {
                 bool ok = false;
@@ -201,24 +189,35 @@ void ClockSettings::onProfileChanged(bool aChanged, bool aActive, QString aProfi
     }
 }
 
-void ClockSettings::setSnooze(int aValue)
+void VolumeSettings::setAlarmEvent(QString aEvent)
 {
-    if (aValue >= SnoozeMin &&
-        aValue <= SnoozeMax &&
-        iSnooze != aValue) {
-        iSnooze = aValue;
-        DBG(iSnooze);
-        iTimeDaemon->set_app_snooze(iClockApp, iSnooze);
-        Q_EMIT snoozeChanged();
+    if (iAlarmEvent != aEvent) {
+        iAlarmEvent = aEvent;
+        DBG(iAlarmEvent);
+        Q_EMIT alarmEventChanged();
     }
 }
 
-void ClockSettings::setVolume(int aValue)
+void VolumeSettings::setVolumeKey(QString aKey)
 {
-    if (aValue >= VolumeMin &&
-        aValue <= VolumeMax &&
-        iVolume != aValue) {
-        iVolume = aValue;
+    if (iVolumeKey != aKey) {
+        iVolumeKey = aKey;
+        DBG(iVolumeKey);
+        queryVolume();
+        if (iVolumeQueryFinished) {
+            iVolumeQueryFinished = false;
+            Q_EMIT volumeQueryFinishedChanged();
+        }
+        Q_EMIT volumeKeyChanged();
+    }
+}
+
+void VolumeSettings::setVolume(int aValue)
+{
+    const int value = (aValue < VolumeMin) ? VolumeMin :
+        (aValue > VolumeMax) ? VolumeMax : aValue;
+    if (iVolume != value) {
+        iVolume = value;
         DBG(iVolume);
 
         // Alarm volume seems to be using the "general" volume regardless of
@@ -226,17 +225,17 @@ void ClockSettings::setVolume(int aValue)
         // profiles. Just in case.
         QString value(QString::number(iVolume));
         const int n = iProfileList.count();
-        for (int i=0; i<n; i++) {
+        for (int i = 0; i < n; i++) {
             iProfileDaemon->set_value(iProfileList.at(i), iVolumeKey, value);
         }
         Q_EMIT volumeChanged();
     }
 }
 
-void ClockSettings::setAlarmPlaying(bool aValue)
+void VolumeSettings::setAlarmPlaying(bool aValue)
 {
     if (aValue) {
-        if (!iAlarmPlaying) {
+        if (!iAlarmEvent.isEmpty() && !iAlarmPlaying) {
             iAlarmPlaying = true;
             stopPlaying();
             Q_EMIT alarmPlayingChanged();
@@ -254,7 +253,7 @@ void ClockSettings::setAlarmPlaying(bool aValue)
     }
 }
 
-void ClockSettings::stopPlaying()
+void VolumeSettings::stopPlaying()
 {
     if (iAlarmEventId) {
         DBG("stopping feedback");
@@ -263,9 +262,10 @@ void ClockSettings::stopPlaying()
     }
 }
 
-void ClockSettings::onPlayFinished(QDBusPendingCallWatcher* aCall)
+void VolumeSettings::onPlayFinished(QDBusPendingCallWatcher* aCall)
 {
     QDBusPendingReply<uint> reply = *aCall;
+    aCall->deleteLater();
     if (reply.isError()) {
         WARN(reply.error());
     } else {
@@ -278,5 +278,4 @@ void ClockSettings::onPlayFinished(QDBusPendingCallWatcher* aCall)
             iFeedbackDaemon->Stop(eventId);
         }
     }
-    aCall->deleteLater();
 }

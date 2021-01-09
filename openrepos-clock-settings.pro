@@ -25,6 +25,7 @@ settings_json.path = /usr/share/jolla-settings/entries
 settings_json.files = $${PREFIX}-$${NAME}.json
 
 OTHER_FILES += \
+  README.md \
   *.json \
   translations/*.ts \
   src/*.xml \

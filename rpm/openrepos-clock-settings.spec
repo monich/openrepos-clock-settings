@@ -1,6 +1,6 @@
 Name:       openrepos-clock-settings
-Summary:    Clock settings
-Version:    1.0.8
+Summary:    Alert settings
+Version:    1.1.0
 Release:    1
 License:    BSD
 URL:        https://github.com/monich/openrepos-clock-settings
@@ -34,6 +34,10 @@ rm -rf %{buildroot}
 %{_datadir}/translations/%{name}*.qm
 
 %changelog
+* Sat Jan 9 2021 Slava Monich <slava.monich@jolla.com> 1.1.0
+- Added calendar section
+- Move the page from the Apps to System section
+
 * Mon Nov 9 2020 Slava Monich <slava.monich@jolla.com> 1.0.8
 - Chinese translations
 

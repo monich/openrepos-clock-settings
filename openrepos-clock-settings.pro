@@ -6,7 +6,7 @@ NAME = clock-settings
 TARGETPATH = $$[QT_INSTALL_QML]/$${PREFIX}/alert/settings
 
 QT += qml dbus
-CONFIG += plugin
+CONFIG += qt plugin hide_symbols
 QMAKE_CXXFLAGS += -Wno-unused-parameter
 INCLUDEPATH += src
 

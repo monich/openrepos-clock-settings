@@ -8,7 +8,9 @@
             <arg name="event" type="s" direction="in"/>
             <arg name="properties" type="a(sv)"/>
             <arg name="event_id" type="u" direction="out"/>
+            <!-- Some Qt versions require In1, some Out1 -->
             <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="QVariantMap"/>
+            <annotation name="org.qtproject.QtDBus.QtTypeName.Out1" value="QVariantMap"/>
         </method>
         <method name="Stop">
             <arg name="event_id" type="u" direction="in"/>

@@ -9,7 +9,40 @@ Page {
 
     SilicaFlickable {
         anchors.fill: parent
-        contentHeight: column.height
+        contentHeight: column.height + Theme.paddingLarge
+
+
+        PullDownMenu {
+            visible: uninstaller.available
+            MenuItem {
+                property Item uninstallRemorsePopup
+                //: Pulley menu item
+                //% "Uninstall"
+                text: qsTrId("openrepos_alert_settings-me-uninstall")
+                onClicked: {
+                    if (!uninstallRemorsePopup) {
+                        uninstallRemorsePopup = uninstallRemorsePopupComponent.createObject(page)
+                    }
+                    //: Remorse popup text
+                    //% "Uninstalling Alerts settings"
+                    uninstallRemorsePopup.execute(qsTrId("openrepos_alert_settings-re-unisntalling"), function () {
+                        uninstaller.uninstall("openrepos-clock-settings")
+                    })
+                }
+            }
+        }
+
+        Component {
+            id: uninstallRemorsePopupComponent
+
+            RemorsePopup { }
+        }
+
+        Uninstaller {
+            id: uninstaller
+
+            onUninstallFinished: if (success) pageStack.pop()
+        }
 
         Column {
             id: column

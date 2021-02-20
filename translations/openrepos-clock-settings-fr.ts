@@ -43,5 +43,15 @@
         <extracomment>Slider label (calendar alert)</extracomment>
         <translation type="unfinished">Volume de l&apos;alerte</translation>
     </message>
+    <message id="openrepos_alert_settings-me-uninstall">
+        <source>Uninstall</source>
+        <extracomment>Pulley menu item</extracomment>
+        <translation>Désinstaller</translation>
+    </message>
+    <message id="openrepos_alert_settings-re-unisntalling">
+        <source>Uninstalling Alerts settings</source>
+        <extracomment>Remorse popup text</extracomment>
+        <translation type="unfinished">Désinstaller les Alertes</translation>
+    </message>
 </context>
 </TS>

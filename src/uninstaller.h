@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2016-2021 Jolla Ltd.
- * Copyright (C) 2016-2021 Slava Monich <slava.monich@jolla.com>
+ * Copyright (C) 2021 Jolla Ltd.
+ * Copyright (C) 2021 Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
  *
@@ -34,48 +34,35 @@
  * any official policies, either expressed or implied.
  */
 
-#include "snoozesettings.h"
-#include "profilevalueinfo.h"
-#include "uninstaller.h"
-#include "volumesettings.h"
+#ifndef UNINSTALLER_H
+#define UNINSTALLER_H
 
-#include <QDebug>
-#include <QtQml>
+#include <QString>
+#include <QObject>
 
-#ifdef DEBUGLOG
-#  define DBG(expr) qDebug() << expr
-#  define ASSERT(expr) Q_ASSERT(expr)
-#else
-#  define DBG(expr) ((void)0)
-#  define ASSERT(expr) ((void)0)
-#endif
-
-#define PLUGIN_ID "openrepos.alert.settings"
-
-class AlertSettingsPlugin : public QQmlExtensionPlugin
+class Uninstaller : public QObject
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID PLUGIN_ID)
+    Q_PROPERTY(bool available READ available NOTIFY availableChanged)
+    Q_PROPERTY(bool busy READ busy NOTIFY busyChanged)
 
 public:
-    void initializeEngine(QQmlEngine* aEngine, const char* aUri) Q_DECL_OVERRIDE;
-    void registerTypes(const char* aUri) Q_DECL_OVERRIDE;
+    Uninstaller(QObject* aParent = Q_NULLPTR);
+    ~Uninstaller();
+
+    bool available() const;
+    bool busy() const;
+
+    Q_INVOKABLE bool uninstall(QString aPackage);
+
+Q_SIGNALS:
+    void uninstallFinished(bool success, QString error);
+    void availableChanged();
+    void busyChanged();
+
+private:
+    class Private;
+    Private* iPrivate;
 };
 
-void AlertSettingsPlugin::initializeEngine(QQmlEngine*, const char* aUri)
-{
-    DBG(aUri);
-    ASSERT(QLatin1String(aUri) == QLatin1String(PLUGIN_ID));
-}
-
-void AlertSettingsPlugin::registerTypes(const char* aUri)
-{
-    DBG(aUri);
-    ASSERT(QLatin1String(aUri) == QLatin1String(PLUGIN_ID));
-    qmlRegisterType<SnoozeSettings>(aUri, 1, 0, "SnoozeSettings");
-    qmlRegisterType<VolumeSettings>(aUri, 1, 0, "VolumeSettings");
-    qmlRegisterType<Uninstaller>(aUri, 1, 0, "Uninstaller");
-    ProfileValueInfo::registerTypes();
-}
-
-#include "alertsettingsplugin.moc"
+#endif // UNINSTALLER_H

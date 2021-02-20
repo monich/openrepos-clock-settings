@@ -36,11 +36,13 @@ SOURCES += \
   src/alertsettingsplugin.cpp \
   src/profilevalueinfo.cpp \
   src/snoozesettings.cpp  \
+  src/uninstaller.cpp \
   src/volumesettings.cpp
 
 HEADERS += \
   src/profilevalueinfo.h \
   src/snoozesettings.h \
+  src/uninstaller.h \
   src/volumesettings.h
 
 INSTALLS += target import settings_qml settings_json

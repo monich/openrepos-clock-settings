@@ -66,7 +66,7 @@ namespace {
 
 VolumeSettings::VolumeSettings(QObject* aParent) :
     QObject(aParent),
-    iVolume(VolumeDefault),
+    iVolume(VolumeMin),
     iAlarmPlaying(false),
     iAlarmEventId(0),
     iVolumeQueryFinished(false),

@@ -59,7 +59,7 @@ SnoozeSettings::SnoozeSettings(QObject* aParent) :
     QObject(aParent),
     iTimeDaemon(new TimeDaemon(TIMED_SERVICE, TIMED_PATH, TIMED_CONNECTION, this)),
     iGetAppSnoozeCall(Q_NULLPTR),
-    iSnooze(SnoozeDefault),
+    iSnooze(SnoozeMin),
     iSnoozeQueryFinished(false)
 {
 }

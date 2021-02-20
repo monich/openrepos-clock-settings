@@ -1,6 +1,6 @@
 Name:       openrepos-clock-settings
 Summary:    Alert settings
-Version:    1.1.2
+Version:    1.1.3
 Release:    1
 License:    BSD
 URL:        https://github.com/monich/openrepos-clock-settings
@@ -14,7 +14,7 @@ BuildRequires: qt5-qttools-linguist
 Requires: jolla-clock
 
 %description
-Settings for the Jolla clock application
+Settings for clock and calendar alarms.
 
 %prep
 %setup -q -n %{name}-%{version}
@@ -34,6 +34,9 @@ rm -rf %{buildroot}
 %{_datadir}/translations/%{name}*.qm
 
 %changelog
+* Sat Feb 20 2021 Slava Monich <slava.monich@jolla.com> 1.1.3
+- Added uninstall option
+
 * Fri Jan 15 2021 Slava Monich <slava.monich@jolla.com> 1.1.2
 - Added Portuguese translation
 

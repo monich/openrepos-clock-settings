@@ -11,7 +11,7 @@
     <message id="openrepos_alert_settings-se-clock">
         <source>Clock</source>
         <extracomment>Clock settings section header</extracomment>
-        <translation>Будильник</translation>
+        <translation>Часы</translation>
     </message>
     <message id="openrepos_alert_settings-se-calendar">
         <source>Calendar</source>

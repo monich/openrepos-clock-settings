@@ -6,7 +6,7 @@
     <message id="openrepos_alert_settings-he-title">
         <source>Alerts</source>
         <extracomment>Page header and settings menu entry</extracomment>
-        <translation type="unfinished">Alerty</translation>
+        <translation>Alerty</translation>
     </message>
     <message id="openrepos_alert_settings-se-clock">
         <source>Clock</source>
@@ -16,7 +16,7 @@
     <message id="openrepos_alert_settings-se-calendar">
         <source>Calendar</source>
         <extracomment>Calendar settings section header</extracomment>
-        <translation type="unfinished">Kalendarz</translation>
+        <translation>Kalendarz</translation>
     </message>
     <message id="openrepos_alert_settings-la-min">
         <source>min</source>
@@ -26,22 +26,22 @@
     <message id="openrepos_alert_settings-la-clock_snooze">
         <source>Snooze interval</source>
         <extracomment>Slider label (clock snooze)</extracomment>
-        <translation type="unfinished">Interwał drzemki</translation>
+        <translation>Interwał drzemki</translation>
     </message>
     <message id="openrepos_alert_settings-la-clock_volume">
         <source>Alarm volume</source>
         <extracomment>Slider label (clock alarm)</extracomment>
-        <translation type="unfinished">Głośność alarmu</translation>
+        <translation>Głośność alarmu</translation>
     </message>
     <message id="openrepos_alert_settings-la-calendar_snooze">
         <source>Repeat interval</source>
         <extracomment>Slider label (repeat interval for calendar alerts)</extracomment>
-        <translation type="unfinished">Powtarzaj interwał</translation>
+        <translation>Interwał powtarzania</translation>
     </message>
     <message id="openrepos_alert_settings-la-calendar_volume">
         <source>Alert volume</source>
         <extracomment>Slider label (calendar alert)</extracomment>
-        <translation type="unfinished">Głośność alarmu</translation>
+        <translation>Głośność alarmu</translation>
     </message>
     <message id="openrepos_alert_settings-me-uninstall">
         <source>Uninstall</source>
@@ -51,7 +51,7 @@
     <message id="openrepos_alert_settings-re-unisntalling">
         <source>Uninstalling Alerts settings</source>
         <extracomment>Remorse popup text</extracomment>
-        <translation type="unfinished">Odinstalowywanie Alertów</translation>
+        <translation>Odinstalowywanie ustawień alertów</translation>
     </message>
 </context>
 </TS>

@@ -43,6 +43,11 @@
         <extracomment>Slider label (calendar alert)</extracomment>
         <translation type="unfinished">Volume de l&apos;alerte</translation>
     </message>
+    <message id="openrepos_alert_settings-me-version">
+        <source>Version %1</source>
+        <extracomment>Pulley menu label</extracomment>
+        <translation>Version %1</translation>
+    </message>
     <message id="openrepos_alert_settings-me-uninstall">
         <source>Uninstall</source>
         <extracomment>Pulley menu item</extracomment>

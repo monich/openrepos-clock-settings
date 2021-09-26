@@ -13,9 +13,9 @@ Page {
 
 
         PullDownMenu {
-            visible: uninstaller.available
             MenuItem {
                 property Item uninstallRemorsePopup
+                visible: uninstaller.available
                 //: Pulley menu item
                 //% "Uninstall"
                 text: qsTrId("openrepos_alert_settings-me-uninstall")

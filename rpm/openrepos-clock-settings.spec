@@ -1,6 +1,6 @@
 Name:       openrepos-clock-settings
 Summary:    Alert settings
-Version:    1.1.6
+Version:    1.1.7
 Release:    1
 License:    BSD
 URL:        https://github.com/monich/openrepos-clock-settings
@@ -11,7 +11,6 @@ BuildRequires: pkgconfig(Qt5Qml)
 BuildRequires: pkgconfig(Qt5Core)
 BuildRequires: pkgconfig(Qt5DBus)
 BuildRequires: qt5-qttools-linguist
-Requires: jolla-clock
 
 %description
 Settings for clock and calendar alarms.
@@ -34,6 +33,9 @@ rm -rf %{buildroot}
 %{_datadir}/translations/%{name}*.qm
 
 %changelog
+* Mon Mar 28 2022 Slava Monich <slava.monich@jolla.com> 1.1.7
+- Added Slovak translation
+
 * Sun Sep 26 2021 Slava Monich <slava.monich@jolla.com> 1.1.6
 - Show version number in the pulley menu
 

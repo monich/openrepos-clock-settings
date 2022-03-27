@@ -33,7 +33,7 @@ Page {
             MenuLabel {
                 //: Pulley menu label
                 //% "Version %1"
-                text: qsTrId("openrepos_alert_settings-me-version").arg("1.1.6")
+                text: qsTrId("openrepos_alert_settings-me-version").arg("1.1.7")
             }
         }
 
